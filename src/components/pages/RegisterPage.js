@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Label from "../Label";
 import Input from "../Input";
 import Button from "../Button";
@@ -9,12 +10,17 @@ import HorizontalRule from "../HorizontalRule";
 import styles from "./RegisterPage.module.css";
 
 function RegisterPage() {
+  const router = useRouter();
+
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
     passwordRepeat: "",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -26,13 +32,32 @@ function RegisterPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const form = new FormData();
+      form.append("name", values.name);
+      form.append("email", values.email);
+      form.append("password", values.password);
 
-    // TODO: 회원가입 처리
-    // 1. fetch 를 사용하여 회원가입 요청을 보냅니다.
-    // 2. 성공 시 응답 데이터를 확인합니다.
-    // 3. 로딩 상태를 만들고 로딩중일 때는 회원가입 버튼을 비활성화 합니다.
-    // 4. 추가로 로딩중일 때는 회원가입 버튼텍스트를 "회원가입 중..."으로 변경합니다.
-    // 5. 에러 상태를 만들고 회원가입 요청이 실패 시 에러 메시지를 회원가입버튼 바로 위에 표시합니다.
+      const res = await fetch(
+        "https://learn.codeit.kr/api/link-service/users",
+        {
+          method: "POST",
+          body: form,
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("회원가입에 실패했습니다.");
+      }
+
+      router.push("/login");
+    } catch (err) {
+      setError("회원가입에 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
