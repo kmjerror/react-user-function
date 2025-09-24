@@ -37,40 +37,18 @@ function RegisterPage() {
       return;
     }
 
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(
-        "https://learn.codeit.kr/api/link-service/users",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: values.name,
-            email: values.email,
-            password: values.password,
-          }),
-        },
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "회원가입에 실패했습니다.");
-      }
-
-      // 회원가입 성공 후 처리
-      alert("회원가입에 성공했습니다.");
+      await authService.register(values.name, values.email, values.password);
       router.push("/login");
-    } catch (error) {
-      setError(error.message || "회원가입에 실패했습니다.");
+    } catch (err) {
+      setError("회원가입에 실패했습니다.");
     } finally {
       setLoading(false);
     }
   }
-
+  
   return (
     <>
       <h1 className={styles.Heading}>회원가입</h1>

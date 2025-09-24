@@ -11,52 +11,30 @@ import { useRouter } from "next/navigation";
 import { authService } from "@/lib/authService";
 
 function LoginPage() {
-  const [values, setValues] = useState({
-    email: "",
-    password: "",
-  });
+  const [values, setValues] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
+
   function handleChange(e) {
     const { name, value } = e.target;
-
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+    setValues((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
     try {
-      setError(null);
-      setLoading(true);
-      const response = await fetch(
-        "https://learn.codeit.kr/api/link-service/auth/login",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: values.email,
-            password: values.password,
-          }),
-        },
-      );
-      if (!response.ok) {
-        throw new Error("로그인에 실패했습니다.");
-      }
-      alert("로그인에 성공했습니다.");
+      await authService.login(values.email, values.password);
       router.push("/me");
-    } catch (error) {
-      setError(error.message);
+    } catch (err) {
+      setError("로그인에 실패했습니다.");
     } finally {
       setLoading(false);
     }
   }
+
 
   return (
     <>
