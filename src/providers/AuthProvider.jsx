@@ -1,6 +1,7 @@
 "use client";
 
 import { authService } from "@/lib/authService";
+import { cookieFetch } from "@/lib/fetchClient";
 import { userService } from "@/lib/userService";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -43,8 +44,11 @@ export default function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    /** @TODO 로그아웃 로직 구현 */
-    console.log("로그아웃");
+    try {
+      await cookieFetch("/auth/logout", { method: "DELETE" });
+    } finally {
+      setUser(null);
+    }
   };
 
   const updateUser = async (user) => {
