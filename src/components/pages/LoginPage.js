@@ -8,35 +8,29 @@ import HorizontalRule from "../HorizontalRule";
 import Link from "next/link";
 import styles from "./LoginPage.module.css";
 import { useRouter } from "next/navigation";
-import { authService } from "@/lib/authService";
+import { useAuth } from "@/providers/AuthProvider";
+
 function LoginPage() {
-  const [values, setValues] = useState({
-    email: "",
-    password: "",
-  });
+  const [values, setValues] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
   const router = useRouter();
+  const { login } = useAuth();
+
   function handleChange(e) {
     const { name, value } = e.target;
-
-    setValues((prevValues) => ({
-      ...prevValues,
-      [name]: value,
-    }));
+    setValues((prevValues) => ({ ...prevValues, [name]: value }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
     try {
-      setError(null);
-      setLoading(true);
-      await authService.login(values.email, values.password);
-      alert("로그인에 성공했습니다.");
+      await login(values.email, values.password);
       router.push("/me");
-    } catch (error) {
-      setError(error.message);
+    } catch (err) {
+      setError("로그인에 실패했습니다.");
     } finally {
       setLoading(false);
     }

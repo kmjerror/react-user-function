@@ -8,7 +8,7 @@ import Button from "../Button";
 import Link from "next/link";
 import HorizontalRule from "../HorizontalRule";
 import styles from "./RegisterPage.module.css";
-import { authService } from "@/lib/authService";
+import { useAuth } from "@/providers/AuthProvider";
 
 function RegisterPage() {
   const [values, setValues] = useState({
@@ -20,6 +20,7 @@ function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
+  const { register } = useAuth();
 
   function handleChange(e) {
     const { name, value } = e.target;
