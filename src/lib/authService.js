@@ -16,5 +16,8 @@ export const authService = {
     }),
 
   // 로그아웃
-  logout: () => {},
+  logout: () => 
+    cookieFetch("/auth/logout", {
+      method: "DELETE",
+    }),
 };
