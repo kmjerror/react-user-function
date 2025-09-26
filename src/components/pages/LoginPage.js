@@ -80,10 +80,10 @@ function LoginPage() {
         <HorizontalRule className={styles.HorizontalRule}>또는</HorizontalRule>
         <Button
           className={styles.GoogleButton}
-          type="button"
           appearance="outline"
+          typee="button"
           onClick={() => {
-            // TODO: 구글 로그인 창으로 이동
+            window.location.href = "/api/auth/google";
           }}
         >
           <img src="/images/google.svg" alt="Google" />
